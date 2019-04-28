@@ -16,6 +16,10 @@ const ConversationSchema = mongoose.Schema({
   }
 });
 
+ConversationSchema.statics.getConversationById = function(id, callback) {
+  Conversation.findById(id, callback);
+}
+
 ConversationSchema.statics.addConversation = (conversation, callback) => {
   conversation.save(callback);
 };

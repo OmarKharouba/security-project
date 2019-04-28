@@ -20,4 +20,20 @@ router.post('/', passport.authenticate("jwt", { session: false }), (req, res, ne
     });
 });
 
+router.get('/:id', (req, res, next) => {
+    let response = { success: true };
+    let id = req.params.id;
+    Conversation.getConversationById(id, (err, coneversation) => {
+        if (err) {
+            response.success = false;
+            response.msg = "There was an error on retrieving the group chat";
+            res.json(response);
+        } else {
+            response.msg = "coneversation retrieved successfully";
+            response.conversation = coneversation;
+            res.json(response);
+        }
+    });
+});
+
 module.exports = router;
