@@ -67,7 +67,7 @@ const initialize = server => {
 
       // save the message to the database
       let message = new Message(data.message);
-      Message.addMessage(message, (err, newMsg) => {});
+      Message.addMessage(message, (err, newMsg) => { });
     });
 
     socket.on('disconnect', () => {
