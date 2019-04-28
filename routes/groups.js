@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const Message = require('../models/message');
+const User = require('../models/user');
 const Conversation = require('../models/conversation');
 
 // create a new group
@@ -13,9 +14,26 @@ router.post('/', passport.authenticate("jwt", { session: false }), (req, res, ne
             response.msg = "There was an error on adding the group";
             res.json(response);
         } else {
-            response.msg = "group added successfuly";
-            response.conversation = addedConeversation;
-            res.json(response);
+            // Add the group Id to its users
+            let users = addedConeversation.participants;
+            let criteria = {
+                username: { $in: users }
+            };
+            User.update(criteria,
+                { $push: { groups: addedConeversation._id } },
+                { multi: true },
+                (err, res) => {
+                    if (err) {
+                        response.success = false;
+                        response.msg = "There was an error on adding the group";
+                        res.json(response);
+                    } else {
+                        response.msg = "group added successfuly";
+                        response.conversation = addedConeversation;
+                        res.json(response);
+                    }
+                }
+            )
         }
     });
 });
