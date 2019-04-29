@@ -31,6 +31,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   notify: boolean;
   notification: any = { timeout: null };
 
+  groups = [];
+
   constructor(
     public route: ActivatedRoute,
     public router: Router,
@@ -55,11 +57,21 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     this.getMessages(this.chatWith);
 
     this.connectToChat();
+
+    this.getGroups();
   }
 
   ngOnDestroy() {
     this.receiveActiveObs.unsubscribe();
     this.receiveMessageObs.unsubscribe();
+  }
+
+  getGroups() {
+    this.authService.getGroups().subscribe(
+      (res: any) => {
+        this.groups = res.groups;
+      }
+    )
   }
 
   connectToChat(): void {

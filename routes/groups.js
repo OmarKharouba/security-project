@@ -20,7 +20,7 @@ router.post('/', passport.authenticate("jwt", { session: false }), (req, res, ne
                 username: { $in: users }
             };
             User.update(criteria,
-                { $push: { groups: addedConeversation._id } },
+                { $push: { groups: { id: addedConeversation._id, name: addedConeversation.name } } },
                 { multi: true },
                 (err, res2) => {
                     if (err) {

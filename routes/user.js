@@ -77,6 +77,19 @@ router.get(
   }
 );
 
+router.get(
+  '/groups',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    let response = { success: true };
+    response.msg = 'Groups retrieved successfuly';
+    User.getUserByUsername(req.user.username, (err, returnedUser) => {
+      response.groups = returnedUser.groups;
+      res.json(response);
+    });
+  }
+)
+
 // user list
 router.get('/', (req, res, next) => {
   User.getUsers()

@@ -13,7 +13,7 @@ export class AuthService {
 
   private apiUrl: string = `${BASE_URL}/users`;
 
-  constructor(public http: Http) {}
+  constructor(public http: Http) { }
 
   registerUser(user): any {
     let url: string = this.apiUrl + '/register';
@@ -49,6 +49,23 @@ export class AuthService {
 
   getProfile(): any {
     let url: string = this.apiUrl + '/profile';
+    this.loadCredentials();
+
+    // prepare the request
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: this.authToken,
+    });
+    let options = new RequestOptions({ headers: headers });
+
+    // POST
+    let observableReq = this.http.get(url, options).map(this.extractData);
+
+    return observableReq;
+  }
+
+  getGroups(): any {
+    let url: string = this.apiUrl + '/groups';
     this.loadCredentials();
 
     // prepare the request
