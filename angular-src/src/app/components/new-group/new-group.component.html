@@ -1,0 +1,21 @@
+<label for="groupName">Group Name</label>
+<input id="groupName" name="groupName" [(ngModel)]="groupName" type="text" placeholder="write group name">
+
+<h3>Selected Usres</h3>
+<h6 *ngIf="selectedUsers.length==1"> No users added yet</h6>
+<ul>
+  <div *ngFor="let user of selectedUsers">
+    <li *ngIf="user.username!=currentUser.username">
+      {{user.username}}
+    </li>
+  </div>
+</ul>
+
+<ul>
+  <li *ngFor="let user of users">
+    {{user.username}}
+    <button (click)="addUser(user)">Add</button>
+  </li>
+</ul>
+
+<button (click)="createGroup()">Create Group</button>

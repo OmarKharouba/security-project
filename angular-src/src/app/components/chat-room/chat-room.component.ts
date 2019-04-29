@@ -38,7 +38,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     public el: ElementRef,
     public authService: AuthService,
     public chatService: ChatService
-  ) {}
+  ) { }
 
   ngOnInit() {
     let userData = this.authService.getUserData();
@@ -213,14 +213,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   }
 
   onNewConv(username: string) {
-    if (this.chatWith != username) {
+    if (this.chatWith != username)
       this.router.navigate(['/chat', username]);
+    if (username != 'new-group') {
       this.getMessages(username);
-    } else {
-      this.getMessages(username);
+      this.currentOnline = this.checkOnline(username);
+      this.showActive = false;
     }
-    this.currentOnline = this.checkOnline(username);
-    this.showActive = false;
   }
 
   notifSound(): void {

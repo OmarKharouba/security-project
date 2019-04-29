@@ -17,10 +17,11 @@ export class ChatService {
   private chatUrl: string = environment.chatUrl;
   private apiUrl: string = `${BASE_URL}/messages`;
   private usersUrl: string = `${BASE_URL}/users`;
+  private groupsUrl: string = `${BASE_URL}/groups`;
 
-  constructor(public authService: AuthService, public http: Http) {}
+  constructor(public authService: AuthService, public http: Http) { }
 
-  connect(username: string, callback: Function = () => {}): void {
+  connect(username: string, callback: Function = () => { }): void {
     // initialize the connection
     this.socket = io(this.chatUrl, { path: CHAT_PATH });
 
@@ -71,6 +72,25 @@ export class ChatService {
 
     // POST
     let observableReq = this.http.get(url, options).map(this.extractData);
+
+    return observableReq;
+  }
+
+  // Create a new group
+  createGroup(body) {
+    let url = this.groupsUrl;
+
+    let authToken = this.authService.getUserData().token;
+
+    // prepare the request
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    });
+    let options = new RequestOptions({ headers: headers });
+
+    // POST
+    let observableReq = this.http.post(url, body, options).map(this.extractData);
 
     return observableReq;
   }

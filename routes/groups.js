@@ -8,21 +8,21 @@ const Conversation = require('../models/conversation');
 // create a new group
 router.post('/', passport.authenticate("jwt", { session: false }), (req, res, next) => {
     let response = { success: true };
-    Conversation.addConversation(req.body, (err, addedConeversation) => {
+    Conversation.addConversation(new Conversation(req.body), (err, addedConeversation) => {
         if (err) {
             response.success = false;
             response.msg = "There was an error on adding the group";
             res.json(response);
         } else {
             // Add the group Id to its users
-            let users = addedConeversation.participants;
+            let users = addedConeversation.participants.map(x => x.username);
             let criteria = {
                 username: { $in: users }
             };
             User.update(criteria,
                 { $push: { groups: addedConeversation._id } },
                 { multi: true },
-                (err, res) => {
+                (err, res2) => {
                     if (err) {
                         response.success = false;
                         response.msg = "There was an error on adding the group";

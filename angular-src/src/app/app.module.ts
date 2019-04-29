@@ -18,6 +18,7 @@ import { AuthService } from "./services/auth.service";
 import { AuthGuard } from "./guards/auth.guard";
 import { ChatService } from "./services/chat.service";
 import { ActiveListComponent } from './components/active-list/active-list.component';
+import { NewGroupComponent } from './components/new-group/new-group.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     ProfileComponent,
     ChatRoomComponent,
     MessageComponent,
-    ActiveListComponent
+    ActiveListComponent,
+    NewGroupComponent
   ],
   imports: [
     BrowserModule,
