@@ -12,7 +12,7 @@ const MessageSchema = mongoose.Schema({
   },
   text: {
     type: String,
-    required: true
+    required: false
   },
   conversationId: {
     type: String,
@@ -22,6 +22,14 @@ const MessageSchema = mongoose.Schema({
     type: Boolean,
     required: false
   },
+  longitude: {
+    type: Number,
+    required: false
+  },
+  latitude: {
+    type: Number,
+    required: false
+  }
 });
 
 MessageSchema.statics.addMessage = (message, callback) => {
@@ -33,7 +41,7 @@ MessageSchema.statics.getMessages = (callback) => {
 };
 
 MessageSchema.statics.getMessagesByConv = (id, callback) => {
-  Message.find({conversationId: id}, callback);
+  Message.find({ conversationId: id }, callback);
 };
 
 

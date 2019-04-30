@@ -11,6 +11,7 @@ export class ActiveListComponent implements OnInit {
   @Input() groups;
   @Input() current: string;
   @Output() newConv = new EventEmitter<string>();
+  @Output() newGroup = new EventEmitter<string>();
 
   constructor() { }
 
@@ -19,6 +20,11 @@ export class ActiveListComponent implements OnInit {
 
   onUserClick(username: string): boolean {
     this.newConv.emit(username);
+    return false;
+  }
+
+  onGroupClick(groupId: string) {
+    this.newGroup.emit(groupId);
     return false;
   }
 

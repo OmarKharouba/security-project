@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
+import { AgmCoreModule } from '@agm/core';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -53,7 +54,10 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpModule,
     FlashMessagesModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    AgmCoreModule.forRoot({
+      apiKey: "AIzaSyB-y58lgDXMHmWHGJdUQf6Af62nudYg1VQ"
+    })
   ],
   providers: [
     AuthGuard,

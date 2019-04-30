@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-3 col-lg-2 active-list-container" [ngClass]="{open: showActive}">
-      <app-active-list [groups]="groups" [users]="userList" [current]="chatWith" (newConv)="onNewConv($event)"></app-active-list>
+      <app-active-list [groups]="groups" [users]="userList" [current]="chatWith" (newConv)="onNewConv($event)" (newGroup)="onNewGroup($event)"></app-active-list>
     </div>
 
     <div *ngIf="chatWith=='new-group'">
@@ -23,6 +23,7 @@
         </div>
 
         <div class="panel-footer" [ngClass]="{blurred: showActive}">
+          <button class="btn btn-primary" (click)="sendLocation()">Send Location</button>
           <form [formGroup]="sendForm" (ngSubmit)="onSendSubmit()">
 
             <div class="input-group">

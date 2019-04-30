@@ -16,8 +16,23 @@ const ConversationSchema = mongoose.Schema({
   }
 });
 
-ConversationSchema.statics.getConversationById = function(id, callback) {
-  Conversation.findById(id, callback);
+ConversationSchema.statics.getConversationById = function (id, callback) {
+  Conversation.findById(id, (err, conversation) => {
+    if (err)
+      callback(err, null);
+    else {
+      Message.getMessagesByConv(conversation._id, (err, messages) => {
+        if (err) {
+          let error = "There was an error on getting messages";
+          return callback(error, null);
+        } else {
+          let conversationObj = extend({}, conversation);
+          conversationObj.messages = messages;
+          return callback(null, conversationObj);
+        }
+      });
+    }
+  });
 }
 
 ConversationSchema.statics.addConversation = (conversation, callback) => {
@@ -29,9 +44,9 @@ ConversationSchema.statics.getConversations = (callback) => {
 };
 
 ConversationSchema.statics.getChatRoom = (callback) => {
-  Conversation.findOne({name: "chat-room"}, (err, conversation) => {
+  Conversation.findOne({ name: "chat-room" }, (err, conversation) => {
     if (err || conversation == null) {
-      let chatRoom = new Conversation({name: "chat-room"});
+      let chatRoom = new Conversation({ name: "chat-room" });
       Conversation.addConversation(chatRoom, (err, conv) => {
         if (err) return callback("There was an error on getting the conversation");
         return callback(null, conv);
@@ -55,9 +70,9 @@ ConversationSchema.statics.getConversationByName = (participant1, participant2, 
   let combo1 = "" + participant1 + "-" + participant2;
   let combo2 = "" + participant2 + "-" + participant1;
 
-  Conversation.findOne({name: combo1}, (err, conversation1) => {
+  Conversation.findOne({ name: combo1 }, (err, conversation1) => {
     if (err || conversation1 == null) {
-      Conversation.findOne({name: combo2}, (err, conversation2) => {
+      Conversation.findOne({ name: combo2 }, (err, conversation2) => {
         if (err || conversation2 == null) {
           User.getUserByUsername(participant1, (err1, user1) => {
             if (err1 || user1 == null) {

@@ -54,6 +54,26 @@ export class ChatService {
     this.socket.disconnect();
   }
 
+  getGroupConversation(groupId) {
+    let url = this.apiUrl;
+    let route = '/' + groupId;
+    url += route;
+
+    let authToken = this.authService.getUserData().token;
+
+    // prepare the request
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    });
+    let options = new RequestOptions({ headers: headers });
+
+    // POST
+    let observableReq = this.http.get(url, options).map(this.extractData);
+
+    return observableReq;
+  }
+
   getConversation(name1: string, name2: string): any {
     let url = this.apiUrl;
     if (name2 != 'chat-room') {

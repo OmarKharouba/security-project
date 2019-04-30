@@ -54,7 +54,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
       message: ['', Validators.required],
     });
 
-    this.getMessages(this.chatWith);
+    // TODO : should be handled in a better way
+    if (this.chatWith.length < 20)
+      this.getMessages(this.chatWith);
+    else
+      this.getGroupMessages(this.chatWith);
 
     this.connectToChat();
 
@@ -86,6 +90,29 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  getGroupMessages(groupId) {
+    this.chatService.getGroupConversation(groupId).subscribe(data => {
+      if (data.success == true) {
+        this.conversationId =
+          data.conversation._id || data.conversation._doc._id;
+        let messages = data.conversation.messages || null;
+        if (messages && messages.length > 0) {
+          for (let message of messages) {
+            this.checkMine(message);
+          }
+          this.noMsg = false;
+          this.messageList = messages;
+          this.scrollToBottom();
+        } else {
+          this.noMsg = true;
+          this.messageList = [];
+        }
+      } else {
+        this.onNewConv('chat-room');
+      }
+    });
   }
 
   getMessages(name: string): void {
@@ -214,6 +241,39 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     this.sendForm.setValue({ message: '' });
   }
 
+  sendLocation() {
+
+    let longitude = 30;
+    let latitude = 30;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+
+        longitude = pos.coords.longitude;
+        latitude = pos.coords.latitude;
+
+        let newMessage: Message = {
+          created: new Date(),
+          from: this.username,
+          conversationId: this.conversationId,
+          inChatRoom: this.chatWith == 'chat-room',
+          longitude: longitude,
+          latitude: latitude
+        };
+
+        this.chatService.sendMessage(newMessage, this.chatWith);
+        newMessage.mine = true;
+        this.noMsg = false;
+        this.messageList.push(newMessage);
+        this.scrollToBottom();
+        this.msgSound();
+        this.sendForm.setValue({ message: '' });
+
+
+      });
+    }
+  }
+
   checkMine(message: Message): void {
     if (message.from == this.username) {
       message.mine = true;
@@ -222,6 +282,14 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
 
   onUsersClick(): void {
     this.showActive = !this.showActive;
+  }
+
+  onNewGroup(groupId: string) {
+    console.log("NEW GROUP FUNCTION");
+    console.log(groupId);
+    if (this.chatWith != groupId)
+      this.router.navigate(['/chat', groupId]);
+    this.getGroupMessages(groupId);
   }
 
   onNewConv(username: string) {

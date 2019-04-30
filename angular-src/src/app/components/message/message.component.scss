@@ -25,6 +25,11 @@
   }
 }
 
+// agm-map {
+//   height: 300px;
+//   width: 600px;
+// }
+
 #time {
   @include opacity(0);
   @include transition("opacity .2s ease-in 0s");

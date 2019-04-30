@@ -2,6 +2,8 @@ const socketIo = require('socket.io');
 const Message = require('../models/message');
 const config = require('../config');
 
+const User = require('../models/user');
+
 const users = [];
 const connections = [];
 
@@ -19,6 +21,15 @@ const initialize = server => {
     socket.on('username', data => {
       if (data.username) {
         socket.username = data.username;
+
+        User.getUserByUsername(data.username, (err, user) => {
+          if (!err) {
+            user.groups.forEach(g => {
+              socket.join(g.id);
+            })
+          }
+        });
+
         let user = { username: socket.username, id: socket.id };
         let existing = searchUser(user.username);
         if (existing == false) {
@@ -38,26 +49,29 @@ const initialize = server => {
     socket.on('message', data => {
       if (data.to == 'chat-room') {
         socket.broadcast.to('chat-room').emit('message', data.message);
-      } else {
-        let user = searchUser(data.to);
-        if (user != false) {
-          let instances = searchConnections(data.to);
-          if (instances.length > 0) {
-            for (let instance of instances) {
-              socket.broadcast.to(instance.id).emit('message', data.message);
-            }
-            let myOtherInstances = searchConnections(socket.username);
-            if (myOtherInstances.length > 1) {
-              for (let conn of myOtherInstances) {
-                // exclude me
-                if (conn != socket) {
-                  socket.broadcast.to(conn.id).emit('message', data.message);
+      } else
+        if (data.to.length >= 20) {
+          socket.broadcast.to(data.message.conversationId).emit('message', data.message);
+        } else {
+          let user = searchUser(data.to);
+          if (user != false) {
+            let instances = searchConnections(data.to);
+            if (instances.length > 0) {
+              for (let instance of instances) {
+                socket.broadcast.to(instance.id).emit('message', data.message);
+              }
+              let myOtherInstances = searchConnections(socket.username);
+              if (myOtherInstances.length > 1) {
+                for (let conn of myOtherInstances) {
+                  // exclude me
+                  if (conn != socket) {
+                    socket.broadcast.to(conn.id).emit('message', data.message);
+                  }
                 }
               }
             }
           }
         }
-      }
       console.log(
         '[%s].to(%s)<< %s',
         data.message.from,
