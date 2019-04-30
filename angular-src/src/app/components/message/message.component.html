@@ -9,7 +9,7 @@
       </h3>
       <p *ngIf="message.text" class="msg-text">{{message.text}}</p>
       <div *ngIf="message.longitude && message.latitude">
-        <agm-map [latitude]="message.latitude" [longitude]="message.longitude" [zoom]="10" [disableDefaultUI]="false">
+        <agm-map [latitude]="message.latitude" [longitude]="message.longitude" [zoom]="15" [disableDefaultUI]="false">
 
           <agm-marker [latitude]="message.latitude" [longitude]="message.longitude" label="User Location">
 

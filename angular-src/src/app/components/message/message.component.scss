@@ -25,10 +25,10 @@
   }
 }
 
-// agm-map {
-//   height: 300px;
-//   width: 600px;
-// }
+agm-map {
+  height: 200px;
+  width: 300px;
+}
 
 #time {
   @include opacity(0);
