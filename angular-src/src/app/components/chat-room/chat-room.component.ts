@@ -224,7 +224,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
           this.notification = {
             from: message.from,
             inChatRoom: message.inChatRoom,
-            text: message.body.text || "Location",
+            text: message.body.text || message.body.image ? "Image" : "Location",
             timeout: setTimeout(() => {
               this.notify = false;
             }, 4000),
@@ -311,8 +311,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     let newMessage: Message = {
       created: new Date(),
       from: this.username,
-      image: base64textString,
-      body: {},
+      body: {
+        image: base64textString
+      },
       conversationId: this.conversationId,
       inChatRoom: this.chatWith == 'chat-room',
     };
@@ -320,7 +321,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     this.chatService.sendMessage({ ...newMessage }, this.chatWith);
     newMessage.mine = true;
     this.noMsg = false;
-    // this.messageList.push(newMessage);
     this.scrollToBottom();
     this.msgSound();
     this.sendForm.setValue({ message: '' });

@@ -6,8 +6,8 @@ export interface Message {
     text?: string;
     longitude?: number;
     latitude?: number;
-  }
-  image?: string;
+    image?: string;
+  };
   conversationId: string;
   inChatRoom: boolean;
 }

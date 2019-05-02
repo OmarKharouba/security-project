@@ -54,19 +54,22 @@ const initialize = server => {
     socket.on('message', data => {
       if (data.to == 'chat-room') {
         socket.broadcast.to('chat-room').emit('message', data.message);
+        // save the message to the database
+        let message = new Message(data.message);
+        Message.addMessage(message, (err, newMsg) => { });
       } else
         if (data.to.length >= 20) {
-          let send = false;
           User.getUserByUsername(socket.username, (err, user) => {
             user.groups.forEach(g => {
+              console.log(data.message.conversationId == g.id);
               if (g.id == data.message.conversationId) {
                 socket.broadcast.to(data.message.conversationId).emit('message', data.message);
-                send = true;
+                // save the message to the database
+                let message = new Message(data.message);
+                Message.addMessage(message, (err, newMsg) => { });
               }
             })
           });
-          if (!send)
-            return;
         } else {
           let user = searchUser(data.to);
           if (user != false) {
@@ -86,6 +89,11 @@ const initialize = server => {
               }
             }
           }
+
+          // save the message to the database
+          let message = new Message(data.message);
+          Message.addMessage(message, (err, newMsg) => { });
+
         }
       console.log(
         '[%s].to(%s)<< %s',
@@ -93,10 +101,6 @@ const initialize = server => {
         data.to,
         data.message.body.text
       );
-
-      // save the message to the database
-      let message = new Message(data.message);
-      Message.addMessage(message, (err, newMsg) => { });
     });
 
     socket.on('disconnect', () => {

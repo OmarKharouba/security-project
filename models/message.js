@@ -20,11 +20,7 @@ const MessageSchema = mongoose.Schema({
   },
   body: {
     type: String,
-    required: false
-  },
-  image: {
-    type: String,
-    required: false
+    required: true
   }
 });
 
