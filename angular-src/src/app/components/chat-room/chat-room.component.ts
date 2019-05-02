@@ -206,9 +206,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
       .receiveMessage()
       .subscribe(message => {
         this.checkMine(message);
+        message.body = JSON.parse(this.decrypt(message.body));
         if (message.conversationId == this.conversationId) {
           this.noMsg = false;
-          message.body = JSON.parse(this.decrypt(message.body));
           this.messageList.push(message);
           this.scrollToBottom();
           this.msgSound();
@@ -219,7 +219,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
           this.notification = {
             from: message.from,
             inChatRoom: message.inChatRoom,
-            text: message.body.text,
+            text: message.body.text || "Location",
             timeout: setTimeout(() => {
               this.notify = false;
             }, 4000),
