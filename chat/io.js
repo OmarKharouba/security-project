@@ -56,7 +56,17 @@ const initialize = server => {
         socket.broadcast.to('chat-room').emit('message', data.message);
       } else
         if (data.to.length >= 20) {
-          socket.broadcast.to(data.message.conversationId).emit('message', data.message);
+          let send = false;
+          User.getUserByUsername(socket.username, (err, user) => {
+            user.groups.forEach(g => {
+              if (g.id == data.message.conversationId) {
+                socket.broadcast.to(data.message.conversationId).emit('message', data.message);
+                send = true;
+              }
+            })
+          });
+          if (!send)
+            return;
         } else {
           let user = searchUser(data.to);
           if (user != false) {
