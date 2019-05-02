@@ -1,6 +1,7 @@
 const socketIo = require('socket.io');
 const Message = require('../models/message');
 const config = require('../config');
+// const fs = require('fs');
 
 const users = [];
 const connections = [];
@@ -35,6 +36,16 @@ const initialize = server => {
       socket.emit('active', users);
     });
 
+    socket.on('image_message', (data) =>{
+      let img_uri = 'public/'  + data.from + '/' + data.to + data.fileName;
+      fs.readFile(img_uri, (err_read_img, data){
+        if (!err_read_img)
+        {
+         socket.emit('image_message', {data: buf.toString('base64')});
+        }
+      });
+    });
+
     socket.on('message', data => {
       if (data.to == 'chat-room') {
         socket.broadcast.to('chat-room').emit('message', data.message);
@@ -59,10 +70,10 @@ const initialize = server => {
         }
       }
       console.log(
-        '[%s].to(%s)<< %s',
-        data.message.from,
-        data.to,
-        data.message.text
+          '[%s].to(%s)<< %s',
+          data.message.from,
+          data.to,
+          data.message.text,
       );
 
       // save the message to the database

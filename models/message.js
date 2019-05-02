@@ -14,6 +14,14 @@ const MessageSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  is_image: {
+    type:Boolean,
+    required:true
+  },
+  img_uri:{
+    type: String,
+    required:false
+  },
   conversationId: {
     type: String,
     required: true

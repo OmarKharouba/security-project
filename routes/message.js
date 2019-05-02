@@ -30,10 +30,29 @@ router.get('/:name1/:name2', passport.authenticate("jwt", {session: false}), (re
       res.json(response);
     } else {
       response.msg = "Conversation retrieved successfuly";
+      //modify this to map each image message to an 'actual' image
       response.conversation = conversation;
       res.json(response);
     }
   });
+});
+
+router.post('/:name1/:name2', passport.authenticate("jwt", {session:false}), (req, res, next)=>{
+  let response = {success:true};
+  img = post.body.image;
+  if (img){
+    fs.writeFile(`/public/images/${req.params.name1}/${req.params.name2}/${req.body.file_name}`, img, (err2)=>{
+      if (err2){
+        response.success = false;
+        response.msg = "Internal Server Error";
+      }
+    });
+  } else{
+    response.success = false;
+    response.msg = "sorry, you can not upload an empty message";
+
+  }
+  res.json(response);
 });
 
 module.exports = router;
