@@ -17,7 +17,6 @@ export class MessageComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => { this.updateFromNow(); this.fadeTime = true }, 2000);
     setInterval(() => { this.updateFromNow() }, 60000);
-    console.log(this.message);
   }
 
   updateFromNow(): void {

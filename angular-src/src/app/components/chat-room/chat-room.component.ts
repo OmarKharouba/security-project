@@ -356,8 +356,4 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     return this.chatService.decryptByDES(msg);
   }
 
-  encrypt(msg) {
-    return this.chatService.encryptByDES(msg);
-  }
-
 }
