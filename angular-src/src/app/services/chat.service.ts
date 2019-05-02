@@ -170,9 +170,6 @@ export class ChatService {
     return body || {};
   }
 
-
-
-
   encryptByDES(message) {
     // For the key, when you pass a string,
     // it's treated as a passphrase and used to derive an actual key and IV.

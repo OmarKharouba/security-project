@@ -7,6 +7,7 @@
       <h3 class="panel-title">
         <strong>{{message.from}}</strong>
       </h3>
+      <img style="width: 200px; height: 200px" *ngIf="message.image" [src]="getUrl(message.image)" alt="Image">
       <p *ngIf="message.body.text" class="msg-text">{{message.body.text}}</p>
       <div *ngIf="message.body.longitude && message.body.latitude">
         <agm-map [latitude]="message.body.latitude" [longitude]="message.body.longitude" [zoom]="15" [disableDefaultUI]="false">

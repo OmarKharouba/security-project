@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 @Component({
@@ -12,7 +13,9 @@ export class MessageComponent implements OnInit {
   time: string;
   fadeTime: boolean;
 
-  constructor() { }
+  constructor(
+    public _DomSanitizationService: DomSanitizer
+  ) { }
 
   ngOnInit() {
     setTimeout(() => { this.updateFromNow(); this.fadeTime = true }, 2000);
@@ -22,4 +25,9 @@ export class MessageComponent implements OnInit {
   updateFromNow(): void {
     this.time = moment(this.message.created).fromNow();
   }
+
+  getUrl(img) {
+    return this._DomSanitizationService.bypassSecurityTrustUrl("data:image/png;base64, " + img);
+  }
+
 }

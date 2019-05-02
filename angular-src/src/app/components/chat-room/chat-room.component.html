@@ -35,7 +35,8 @@
             </div>
           </form>
           <button class="btn btn-primary" (click)="sendLocation()">Send Location</button>
-
+          <span>Select Image</span>
+          <input type="file" accept="image/*" (change)="sendImage($event)">
         </div>
 
         <div *ngIf="notify" class="well notification">

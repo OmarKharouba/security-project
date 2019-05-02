@@ -7,6 +7,7 @@ export interface Message {
     longitude?: number;
     latitude?: number;
   }
+  image?: string;
   conversationId: string;
   inChatRoom: boolean;
 }

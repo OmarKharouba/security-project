@@ -54,15 +54,19 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
       message: ['', Validators.required],
     });
 
+    this.getMessagesHelper();
+
+    this.connectToChat();
+
+    this.getGroups();
+  }
+
+  getMessagesHelper() {
     // TODO : should be handled in a better way
     if (this.chatWith.length < 20)
       this.getMessages(this.chatWith);
     else
       this.getGroupMessages(this.chatWith);
-
-    this.connectToChat();
-
-    this.getGroups();
   }
 
   ngOnDestroy() {
@@ -283,6 +287,43 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
 
       });
     }
+  }
+
+  sendImage(event) {
+    var files = event.target.files;
+    var file = files[0];
+
+    if (files && file) {
+      var reader = new FileReader();
+
+      reader.onload = this._handleReaderLoaded.bind(this);
+
+      reader.readAsBinaryString(file);
+    }
+
+  }
+
+  _handleReaderLoaded(readerEvt) {
+    var binaryString = readerEvt.target.result;
+    var base64textString = btoa(binaryString);
+
+    let newMessage: Message = {
+      created: new Date(),
+      from: this.username,
+      image: base64textString,
+      body: {},
+      conversationId: this.conversationId,
+      inChatRoom: this.chatWith == 'chat-room',
+    };
+
+    this.chatService.sendMessage({ ...newMessage }, this.chatWith);
+    newMessage.mine = true;
+    this.noMsg = false;
+    // this.messageList.push(newMessage);
+    this.scrollToBottom();
+    this.msgSound();
+    this.sendForm.setValue({ message: '' });
+    this.getMessagesHelper();
   }
 
   checkMine(message: Message): void {
