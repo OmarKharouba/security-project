@@ -81,7 +81,7 @@ const initialize = server => {
         '[%s].to(%s)<< %s',
         data.message.from,
         data.to,
-        data.message.text
+        data.message.body.text
       );
 
       // save the message to the database

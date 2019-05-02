@@ -157,12 +157,7 @@ export class ChatService {
   }
 
   sendMessage(message: Message, chatWith: string): void {
-    if(message.text)
-      message.text = this.encryptByDES(message.text);
-    // console.log(x);
-    // console.log(this.decryptByDES(x));
-  
-
+    message.body = this.encryptByDES(JSON.stringify(message.body));
     this.socket.emit('message', { message: message, to: chatWith });
   }
 
@@ -188,8 +183,8 @@ export class ChatService {
     // console.log(CryptoJS.enc.Hex.parse(CryptoJS.enc.Utf8.parse(key).toString(CryptoJS.enc.Hex)));
     // CryptoJS use CBC as the default mode, and Pkcs7 as the default padding scheme
     var encrypted = crypto.DES.encrypt(message, keyHex, {
-        mode: crypto.mode.ECB,
-        padding: crypto.pad.Pkcs7
+      mode: crypto.mode.ECB,
+      padding: crypto.pad.Pkcs7
     });
     // decrypt encrypt result
     // var decrypted = CryptoJS.DES.decrypt(encrypted, keyHex, {
@@ -212,11 +207,11 @@ export class ChatService {
     var keyHex = crypto.enc.Utf8.parse('9B4A53E4E47DADC2');
     // direct decrypt ciphertext
     var decrypted = crypto.DES.decrypt(
-        ciphertext
-    , keyHex, {
+      ciphertext
+      , keyHex, {
         mode: crypto.mode.ECB,
         padding: crypto.pad.Pkcs7
-    });
+      });
     return decrypted.toString(crypto.enc.Utf8);
   }
 }

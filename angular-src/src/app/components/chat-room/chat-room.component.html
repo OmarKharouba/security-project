@@ -23,7 +23,6 @@
         </div>
 
         <div class="panel-footer" [ngClass]="{blurred: showActive}">
-          <button class="btn btn-primary" (click)="sendLocation()">Send Location</button>
           <form [formGroup]="sendForm" (ngSubmit)="onSendSubmit()">
 
             <div class="input-group">
@@ -35,6 +34,8 @@
               </span>
             </div>
           </form>
+          <button class="btn btn-primary" (click)="sendLocation()">Send Location</button>
+
         </div>
 
         <div *ngIf="notify" class="well notification">

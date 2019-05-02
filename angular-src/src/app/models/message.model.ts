@@ -2,9 +2,11 @@ export interface Message {
   mine?: boolean;
   created: Date;
   from: string;
-  text?: string;
+  body: {
+    text?: string;
+    longitude?: number;
+    latitude?: number;
+  }
   conversationId: string;
   inChatRoom: boolean;
-  longitude?: number;
-  latitude?: number ;
 }

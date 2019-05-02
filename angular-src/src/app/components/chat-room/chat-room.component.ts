@@ -98,6 +98,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
         this.conversationId =
           data.conversation._id || data.conversation._doc._id;
         let messages = data.conversation.messages || null;
+        messages.forEach(x => {
+          x.body = JSON.parse(this.decrypt(x.body));
+        });
         if (messages && messages.length > 0) {
           for (let message of messages) {
             this.checkMine(message);
@@ -121,6 +124,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
         this.conversationId =
           data.conversation._id || data.conversation._doc._id;
         let messages = data.conversation.messages || null;
+        messages.forEach(x => {
+          x.body = JSON.parse(this.decrypt(x.body));
+        });
         if (messages && messages.length > 0) {
           for (let message of messages) {
             this.checkMine(message);
@@ -202,6 +208,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
         this.checkMine(message);
         if (message.conversationId == this.conversationId) {
           this.noMsg = false;
+          message.body = JSON.parse(this.decrypt(message.body));
           this.messageList.push(message);
           this.scrollToBottom();
           this.msgSound();
@@ -212,7 +219,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
           this.notification = {
             from: message.from,
             inChatRoom: message.inChatRoom,
-            text: message.text,
+            text: message.body.text,
             timeout: setTimeout(() => {
               this.notify = false;
             }, 4000),
@@ -227,12 +234,14 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     let newMessage: Message = {
       created: new Date(),
       from: this.username,
-      text: this.sendForm.value.message,
+      body: {
+        text: this.sendForm.value.message,
+      },
       conversationId: this.conversationId,
       inChatRoom: this.chatWith == 'chat-room',
     };
 
-    this.chatService.sendMessage(newMessage, this.chatWith);
+    this.chatService.sendMessage({ ...newMessage }, this.chatWith);
     newMessage.mine = true;
     this.noMsg = false;
     this.messageList.push(newMessage);
@@ -257,11 +266,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
           from: this.username,
           conversationId: this.conversationId,
           inChatRoom: this.chatWith == 'chat-room',
-          longitude: longitude,
-          latitude: latitude
+          body: {
+            longitude: longitude,
+            latitude: latitude
+          }
         };
 
-        this.chatService.sendMessage(newMessage, this.chatWith);
+        this.chatService.sendMessage({ ...newMessage }, this.chatWith);
         newMessage.mine = true;
         this.noMsg = false;
         this.messageList.push(newMessage);
@@ -285,8 +296,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   }
 
   onNewGroup(groupId: string) {
-    console.log("NEW GROUP FUNCTION");
-    console.log(groupId);
     if (this.chatWith != groupId)
       this.router.navigate(['/chat', groupId]);
     this.getGroupMessages(groupId);
@@ -342,4 +351,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     if (a.username > b.username) return 1;
     return 0;
   }
+
+  decrypt(msg) {
+    return this.chatService.decryptByDES(msg);
+  }
+
+  encrypt(msg) {
+    return this.chatService.encryptByDES(msg);
+  }
+
 }

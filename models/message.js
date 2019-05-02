@@ -10,10 +10,6 @@ const MessageSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  text: {
-    type: String,
-    required: false
-  },
   conversationId: {
     type: String,
     required: true
@@ -22,13 +18,9 @@ const MessageSchema = mongoose.Schema({
     type: Boolean,
     required: false
   },
-  longitude: {
-    type: Number,
-    required: false
-  },
-  latitude: {
-    type: Number,
-    required: false
+  body: {
+    type: String,
+    required: true
   }
 });
 

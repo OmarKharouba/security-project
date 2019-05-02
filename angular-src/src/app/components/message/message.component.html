@@ -7,11 +7,11 @@
       <h3 class="panel-title">
         <strong>{{message.from}}</strong>
       </h3>
-      <p *ngIf="message.text" class="msg-text">{{message.text}}</p>
-      <div *ngIf="message.longitude && message.latitude">
-        <agm-map [latitude]="message.latitude" [longitude]="message.longitude" [zoom]="15" [disableDefaultUI]="false">
+      <p *ngIf="message.body.text" class="msg-text">{{message.body.text}}</p>
+      <div *ngIf="message.body.longitude && message.body.latitude">
+        <agm-map [latitude]="message.body.latitude" [longitude]="message.body.longitude" [zoom]="15" [disableDefaultUI]="false">
 
-          <agm-marker [latitude]="message.latitude" [longitude]="message.longitude" label="User Location">
+          <agm-marker [latitude]="message.body.latitude" [longitude]="message.body.longitude" label="User Location">
 
             <agm-info-window>
               <strong>InfoWindow content</strong>
