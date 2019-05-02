@@ -42,6 +42,11 @@ const initialize = server => {
       }
     });
 
+    socket.on('getsocket', username => {
+      socket.emit('socket', searchConnections(username));
+    });
+
+
     socket.on('getactive', () => {
       socket.emit('active', users);
     });
