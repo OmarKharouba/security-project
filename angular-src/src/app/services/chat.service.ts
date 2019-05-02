@@ -157,7 +157,7 @@ export class ChatService {
   }
 
   sendMessage(message: Message, chatWith: string): void {
-    message.body = this.encryptByDES(JSON.stringify(message.body));
+    message.body = this.encrypt(JSON.stringify(message.body));
     this.socket.emit('message', { message: message, to: chatWith });
   }
 
@@ -170,16 +170,16 @@ export class ChatService {
     return body || {};
   }
 
-  encryptByDES(message) {
+  encrypt(message) {
     // For the key, when you pass a string,
     // it's treated as a passphrase and used to derive an actual key and IV.
     // Or you can pass a WordArray that represents the actual key.
     // If you pass the actual key, you must also pass the actual IV.
-    var keyHex = crypto.enc.Utf8.parse('9B4A53E4E47DADC2');
+    var keyHex = crypto.enc.Utf8.parse('15ABE14CAD91857F45AB4545A045267A');
     // console.log(CryptoJS.enc.Utf8.stringify(keyHex), CryptoJS.enc.Hex.stringify(keyHex));
     // console.log(CryptoJS.enc.Hex.parse(CryptoJS.enc.Utf8.parse(key).toString(CryptoJS.enc.Hex)));
     // CryptoJS use CBC as the default mode, and Pkcs7 as the default padding scheme
-    var encrypted = crypto.DES.encrypt(message, keyHex, {
+    var encrypted = crypto.AES.encrypt(message, keyHex, {
       mode: crypto.mode.ECB,
       padding: crypto.pad.Pkcs7
     });
@@ -200,10 +200,10 @@ export class ChatService {
     return encrypted.toString();
   }
 
-  decryptByDES(ciphertext: string) {
-    var keyHex = crypto.enc.Utf8.parse('9B4A53E4E47DADC2');
+  decrypt(ciphertext: string) {
+    var keyHex = crypto.enc.Utf8.parse('15ABE14CAD91857F45AB4545A045267A');
     // direct decrypt ciphertext
-    var decrypted = crypto.DES.decrypt(
+    var decrypted = crypto.AES.decrypt(
       ciphertext
       , keyHex, {
         mode: crypto.mode.ECB,

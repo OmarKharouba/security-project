@@ -128,9 +128,10 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
         this.conversationId =
           data.conversation._id || data.conversation._doc._id;
         let messages = data.conversation.messages || null;
-        messages.forEach(x => {
-          x.body = JSON.parse(this.decrypt(x.body));
-        });
+        if (messages)
+          messages.forEach(x => {
+            x.body = JSON.parse(this.decrypt(x.body));
+          });
         if (messages && messages.length > 0) {
           for (let message of messages) {
             this.checkMine(message);
@@ -394,7 +395,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   }
 
   decrypt(msg) {
-    return this.chatService.decryptByDES(msg);
+    return this.chatService.decrypt(msg);
   }
 
 }
